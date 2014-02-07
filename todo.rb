@@ -17,7 +17,7 @@ class Todo
 
   def main_menu
     view.display_menu
-    main_menu_selection(view.get_user_input)
+    main_menu_selection(view.get_user_input_int)
   end
 
   def main_menu_selection(choice)
@@ -36,21 +36,40 @@ class Todo
 
   def display_list
     view.display_tasks(list)
+    main_menu
   end
 
   def add_task
     view.prompt_user_new_task
+    task = view.get_user_input_string
+    #list.add_task(task)
+    view.task_added(task)
+    main_menu
   end
 
   def remove_task
-
+    view.display_tasks(list)
+    view.prompt_user_remove_task
+    task_id = view.get_user_input_int
+    #task = list.remove_task(task_id)
+    #view.task_removed(task)
+    main_menu
   end
 
   def tag_task
-
+    view.display_tasks(list)
+    view.prompt_user_task_id
+    task_id = get_user_input_int
+    view.prompt_user_add_task
+    tag = get_user_input_string
+    #task.add_tag(task_id, tag)
+    main_menu
   end
 
   def view_tags
+    #all_tags = list.all_tags
+    #view.display_tags(all_tags)
+    tag_choice = get_user_input_int
 
   end
 
