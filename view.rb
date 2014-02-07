@@ -46,7 +46,7 @@ INPUT
     puts "Added \"#{task}\" to list"
   end
 
-  def prompt_user_remove_task
+  def prompt_user_task_id
     print "Enter Task Id: "
   end
 
@@ -68,7 +68,10 @@ INPUT
       puts "[#{counter}] tag"
       counter += 1
     end
+    print "Choice: "
   end
 
-
+  def display_tag_list(tags)
+    #display
+  end
 end

@@ -49,7 +49,7 @@ class Todo
 
   def remove_task
     view.display_tasks(list)
-    view.prompt_user_remove_task
+    view.prompt_user_task_id
     task_id = view.get_user_input_int
     #task = list.remove_task(task_id)
     #view.task_removed(task)
@@ -59,9 +59,9 @@ class Todo
   def tag_task
     view.display_tasks(list)
     view.prompt_user_task_id
-    task_id = get_user_input_int
+    task_id = view.get_user_input_int
     view.prompt_user_add_task
-    tag = get_user_input_string
+    tag = view.get_user_input_string
     #task.add_tag(task_id, tag)
     main_menu
   end
@@ -69,12 +69,17 @@ class Todo
   def view_tags
     #all_tags = list.all_tags
     #view.display_tags(all_tags)
-    tag_choice = get_user_input_int
-
+    tag_choice = view.get_user_input_string
+    #view.display_tag_list(tag_choice)
+    main_menu
   end
 
   def complete_task
-
+    view.display_tasks(list)
+    view.prompt_user_task_id
+    task_id = view.get_user_input_int
+    #list.complete(task_id)
+    main_menu
   end
 
   attr_reader :list, :view
