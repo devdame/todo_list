@@ -7,7 +7,7 @@ class Task
   def initialize(args)
     @id = @@task_ids
     @created_at = Time.parse(args[:created_at])
-    @completed_at = args[:completed_at].empty? ? "not completed" : Time.parse(args[:completed_at])
+    @completed_at = args[:completed_at].empty? ? "" : Time.parse(args[:completed_at])
     @task = args[:task]
     @tags = args[:tags].split(",")
     increment_id
@@ -17,9 +17,17 @@ class Task
     @@task_ids +=1
   end
 
+  def item_data
+    "\"#{created_at}\",\"#{completed_at}\",\"#{task}\",\"#{tags.join(',')}\"\n"
+  end
+
+  def add_tag(tag)
+    self.tags << tag
+  end
+
   def to_s
      created = created_at.strftime(format='%l%P %b %-d')
-     completed_at == "not completed" ? complete = "not completed" : complete = completed_at.strftime(format='%l%P %b %-d')
+     completed_at == "" ? complete = "not completed" : complete = completed_at.strftime(format='%l%P %b %-d')
     "#{id}. #{task}. Created at: #{created}, #{tags}, Completed at: #{complete}"                                           #.strftime(format='%l%P %b %-d')
   end
 
@@ -47,10 +55,13 @@ class List
     Task.new(args)
   end
 
-
   def add_task(task)
     args = {created_at: Time.now.to_s, completed_at:  "", task: task, tags: ""}
     contents << create_task(args)
+  end
+
+  def display_tags
+    contents.map{|task| task.tags}.flatten.uniq
   end
 
   def delete_task(id)
@@ -59,7 +70,22 @@ class List
   end
 
   def find_task_by_id(id)
-    contents.select{|task| task.id == id}[0]
+    contents.select{|task| task.id == id.to_i}[0]
+  end
+
+  def display_by_tag(tag)
+
+  end
+
+  def select_by_tag(tag)
+
+  end
+
+  def update_file
+    File.open('list.csv', "w") do |file|
+      file << "created_at,completed_at,task,tags\n"
+      contents.each{|item| file << item.item_data }
+    end
   end
 
   def populate_contents
@@ -99,5 +125,9 @@ puts
 my_list.display_in_order
 
 puts
-my_list.add_task("Call mom")
+my_list.add_task("Walk the dog")
 my_list.display
+puts "\n\n"
+# my_list.update_file
+puts my_list.display_tags
+
