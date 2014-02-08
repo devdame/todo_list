@@ -114,6 +114,7 @@ class List
     contents.clear
     Task.restart_counter
     populate_contents
+
   end
 
   def populate_contents
