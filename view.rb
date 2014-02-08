@@ -17,6 +17,8 @@ class View
 [4] Tag Task
 [5] View Tags
 [6] Complete Task
+[7] Save List
+[8] Exit/ Save
 
 INPUT
     print "Choice: "
@@ -55,7 +57,7 @@ INPUT
   end
 
   def prompt_user_task_id
-    print "Choose a task to add tag: "
+    print "Choose a task: "
   end
 
   def prompt_user_add_task
@@ -65,13 +67,16 @@ INPUT
   def display_tags(tags)
     counter = 1
     tags.each do |tag|
-      puts "[#{counter}] tag"
+      puts "[#{counter}] #{tag}"
       counter += 1
     end
     print "Choice: "
   end
 
-  def display_tag_list(tags)
-    #display
+  def display_exit
+    print "Saving file"
+    4.times {print "."; sleep(0.4)}
+    puts "\nBye!"
+    sleep(1.4)
   end
 end

@@ -3,7 +3,8 @@ require 'time'
 
 class Task
   @@task_ids = 1
-  attr_reader :id, :created_at, :completed_at, :task, :tags
+  attr_accessor :completed_at
+  attr_reader :id, :created_at, :task, :tags
   def initialize(args)
     @id = @@task_ids
     @created_at = Time.parse(args[:created_at])
@@ -17,8 +18,16 @@ class Task
     @@task_ids +=1
   end
 
+  def self.restart_counter
+    @@task_ids = 1
+  end
+
   def item_data
     "\"#{created_at}\",\"#{completed_at}\",\"#{task}\",\"#{tags.join(',')}\"\n"
+  end
+
+  def complete
+    self.completed_at = Time.now
   end
 
   def add_tag(tag)
@@ -27,8 +36,9 @@ class Task
 
   def to_s
      created = created_at.strftime(format='%l%P %b %-d')
-     completed_at == "" ? complete = "not completed" : complete = completed_at.strftime(format='%l%P %b %-d')
-    "#{id}. #{task}. Created at: #{created}, #{tags}, Completed at: #{complete}"                                           #.strftime(format='%l%P %b %-d')
+     completed_at == "" ? complete = " " : complete = "X"
+     # completed_at == "" ? complete = "not completed" : complete = completed_at.strftime(format='%l%P %b %-d')
+    "#{id}. [#{complete}] #{task}. Created at: #{created}, #{tags}"                                           #.strftime(format='%l%P %b %-d')
   end
 
   def <=>(next_task)
@@ -60,6 +70,11 @@ class List
     contents << create_task(args)
   end
 
+  def add_tag_to_task(task_id, task_s )
+    task = find_task_by_id(task_id)
+    task.tags << task_s
+  end
+
   def display_tags
     contents.map{|task| task.tags}.flatten.uniq
   end
@@ -67,18 +82,24 @@ class List
   def delete_task(id)
     task = find_task_by_id(id)
     contents.delete(task)
+    refresh_tasks
+    task.task
   end
 
   def find_task_by_id(id)
-    contents.select{|task| task.id == id.to_i}[0]
+    contents.select{|task| task.id == id}[0]
+  end
+
+  def task_complete(id)
+    puts find_task_by_id(id).complete
   end
 
   def display_by_tag(tag)
-
+    display(select_by_tag(tag))
   end
 
   def select_by_tag(tag)
-
+    contents.select{|task|task.tags.include?(tag)}
   end
 
   def update_file
@@ -86,6 +107,13 @@ class List
       file << "created_at,completed_at,task,tags\n"
       contents.each{|item| file << item.item_data }
     end
+  end
+
+  def refresh_tasks
+    update_file
+    contents.clear
+    Task.restart_counter
+    populate_contents
   end
 
   def populate_contents
@@ -105,6 +133,7 @@ class List
   def display_in_order
     display(contents.sort)
   end
+
   def get_tasks_by_tag(tag)
     contents.select {|task| task.tags.include?(tag)}
   end
@@ -115,19 +144,19 @@ class List
 end
 
 
-my_list = List.new
-# puts my_list.contents[0]
-my_list.display
+# my_list = List.new
+# # puts my_list.contents[0]
+# my_list.display
 
-puts
+# puts
 
-puts
-my_list.display_in_order
+# puts
+# my_list.display_in_order
 
-puts
-my_list.add_task("Walk the dog")
-my_list.display
-puts "\n\n"
-# my_list.update_file
-puts my_list.display_tags
+# puts
+# my_list.add_task("Walk the dog")
+# my_list.display
+# puts "\n\n"
+# # my_list.update_file
+# puts my_list.display_tags
 

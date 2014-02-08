@@ -28,6 +28,8 @@ class Todo
     when 4 then tag_task
     when 5 then view_tags
     when 6 then complete_task
+    when 7 then save_list
+    when 8 then quit_program
     else
       view.invalid_choice
       main_menu
@@ -35,50 +37,61 @@ class Todo
   end
 
   def display_list
-    view.display_tasks(list)
+    puts
+    list.display
     main_menu
   end
 
   def add_task
     view.prompt_user_new_task
     task = view.get_user_input_string
-    #list.add_task(task)
+    list.add_task(task)
     view.task_added(task)
     main_menu
   end
 
   def remove_task
-    view.display_tasks(list)
+    list.display
     view.prompt_user_task_id
     task_id = view.get_user_input_int
-    #task = list.remove_task(task_id)
-    #view.task_removed(task)
+    task = list.delete_task(task_id)
+    view.task_removed(task)
     main_menu
   end
 
   def tag_task
-    view.display_tasks(list)
+    list.display
     view.prompt_user_task_id
     task_id = view.get_user_input_int
     view.prompt_user_add_task
-    tag = view.get_user_input_string
-    #task.add_tag(task_id, tag)
+    tag = view.get_user_input_string.downcase
+    list.add_tag_to_task(task_id, tag)
     main_menu
   end
 
   def view_tags
-    #all_tags = list.all_tags
-    #view.display_tags(all_tags)
-    tag_choice = view.get_user_input_string
-    #view.display_tag_list(tag_choice)
+    all_tags = list.display_tags
+    view.display_tags(all_tags)
+    tag_choice = view.get_user_input_int
+    list.display_by_tag(all_tags[tag_choice - 1])
     main_menu
   end
 
   def complete_task
-    view.display_tasks(list)
+    list.display
     view.prompt_user_task_id
     task_id = view.get_user_input_int
-    #list.complete(task_id)
+    list.task_complete(task_id)
+    main_menu
+  end
+
+  def quit_program
+    view.display_exit
+    list.update_file
+  end
+
+  def save_list
+    list.update_file
     main_menu
   end
 
