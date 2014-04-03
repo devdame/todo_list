@@ -1,3 +1,8 @@
+#Task Blaster
+
+A console application for managing a to-do list.  Created at Dev Bootcamp.
+
+
 ```
 
 ""8"" 8""""8 8""""8 8   8
